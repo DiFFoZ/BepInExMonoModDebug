@@ -40,6 +40,18 @@ internal sealed class DebugDMDGenerator : DMDGenerator<DebugDMDGenerator>
             return DMDGenerator<DMDEmitDynamicMethodGenerator>.Generate(dmd, context);
         }
 
+        DumpMethodToFile(dmd);
+
+        return generatedMethod;
+    }
+
+    private static void DumpMethodToFile(DynamicMethodDefinition dmd)
+    {
+        if (!BepInExMonoModDebugPatcher.Configuration.ShouldSaveDumpFile.Value)
+        {
+            return;
+        }
+
         try
         {
             var methodName = GetFullMethodName(dmd.OriginalMethod);
@@ -63,8 +75,6 @@ internal sealed class DebugDMDGenerator : DMDGenerator<DebugDMDGenerator>
         {
             BepInExMonoModDebugPatcher.Logger.LogError("Failed to create dump file: " + ex);
         }
-
-        return generatedMethod;
     }
 
     private static string GetFullMethodName(MethodBase @base)
