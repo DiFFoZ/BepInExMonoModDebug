@@ -1,0 +1,10 @@
+{
+    "name": "BepInEx_MonoMod_Debug_Patcher",
+    "version_number": "0.0.0",
+    "website_url": "https://github.com/DiFFoZ/BepInExMonoModDebug",
+    "description": "Makes exception easier to debug",
+    "dependencies":
+    [
+        "BepInEx-BepInExPack-5.4.2100"
+    ]
+}
