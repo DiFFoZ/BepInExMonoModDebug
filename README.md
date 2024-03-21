@@ -1,0 +1,2 @@
+# BepInExMonoModDebug
+ 
