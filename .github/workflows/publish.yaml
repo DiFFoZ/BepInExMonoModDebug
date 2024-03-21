@@ -39,8 +39,6 @@ jobs:
           mv ./release/BepInEx/patchers/BepInExMonoModDebug/icon.png ./release
           mv ./release/BepInEx/patchers/BepInExMonoModDebug/manifest.json ./release
           mv ./*.md ./release
-          mv ./Bundles/ ./release/BepInEx/patchers/BepInExMonoModDebug
-          mv ./Translations/ ./release/BepInEx/patchers/BepInExMonoModDebug
           cd ./release
           zip -r modpack.zip * -x ./BepInEx/patchers/BepInExMonoModDebug/BepInExMonoModDebug.deps.json
 
