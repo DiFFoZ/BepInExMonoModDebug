@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using MonoMod.Utils;
@@ -21,7 +20,7 @@ internal sealed class DebugDMDGenerator : DMDGenerator<DebugDMDGenerator>
         if (!ShouldDump || dmd.OriginalMethod == null)
         {
             ToggleDump(false);
-            return DMDGenerator<DMDCecilGenerator>.Generate(dmd, context);
+            return DMDGenerator<DMDEmitDynamicMethodGenerator>.Generate(dmd, context);
         }
 
         ShouldDump = false;
@@ -34,7 +33,7 @@ internal sealed class DebugDMDGenerator : DMDGenerator<DebugDMDGenerator>
         }
         catch (Exception ex)
         {
-            BepInExMonoModDebugPatcher.Logger.LogError("Failed to generate debug file: " + ex);
+            BepInExMonoModDebugPatcher.Logger.LogWarning("Failed to generate debug file\n" + ex);
 
             ToggleDump(false);
             return DMDGenerator<DMDEmitDynamicMethodGenerator>.Generate(dmd, context);
@@ -54,22 +53,17 @@ internal sealed class DebugDMDGenerator : DMDGenerator<DebugDMDGenerator>
 
         try
         {
-            var methodName = GetFullMethodName(dmd.OriginalMethod);
+            var methodName = GetFullMethodName(dmd.OriginalMethod) + ".dll";
+            var dumpName = dmd.GetDumpName("Cecil") + ".dll";
 
-            var files = Directory.GetFiles(BepInExMonoModDebugPatcher.DumpsDirectory);
-
-            var fileToDelete = files.FirstOrDefault(f => Path.GetFileName(f).StartsWith(methodName, StringComparison.OrdinalIgnoreCase));
+            var fileToDelete = Path.Combine(BepInExMonoModDebugPatcher.DumpsDirectory, methodName);
             if (fileToDelete != null)
             {
                 File.Delete(fileToDelete);
             }
 
-            // get the last file in dumps
-            var lastFileWritten = files
-                .OrderByDescending(File.GetLastWriteTime)
-                .First();
-
-            File.Move(lastFileWritten, Path.Combine(Path.GetDirectoryName(lastFileWritten), methodName + ".dll"));
+            var dumpFile = Path.Combine(BepInExMonoModDebugPatcher.DumpsDirectory, dumpName);
+            File.Move(dumpFile, fileToDelete);
         }
         catch (Exception ex) // even if exception occurred (no permission to write/read) we really want to continue the patching
         {
@@ -79,7 +73,7 @@ internal sealed class DebugDMDGenerator : DMDGenerator<DebugDMDGenerator>
 
     private static string GetFullMethodName(MethodBase @base)
     {
-        var sb = new StringBuilder();
+        var sb = new StringBuilder(256);
 
         var declaringType = @base.DeclaringType;
         if (declaringType != null)
@@ -100,13 +94,9 @@ internal sealed class DebugDMDGenerator : DMDGenerator<DebugDMDGenerator>
 
         sb.Append(@base.Name);
 
-        for (var i = sb.Length - 1; i >= 0; i--)
+        foreach (var invalidChar in Path.GetInvalidFileNameChars())
         {
-            var c = sb[i];
-            if (Array.IndexOf(Path.GetInvalidFileNameChars(), c) != -1)
-            {
-                sb.Remove(i, 1);
-            }
+            sb.Replace(invalidChar, '_');
         }
 
         return sb.ToString();
