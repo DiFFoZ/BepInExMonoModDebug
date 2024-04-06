@@ -17,6 +17,7 @@ internal static class Patch_StackTrace
         var method = AccessTools.Method(typeof(StackFrame), nameof(StackFrame.GetFileLineNumber));
 
         matcher.SearchForward(c => c.Calls(method))
+            .ThrowIfInvalid("Failed to find call GetFileLineNumber")
             .Set(OpCodes.Call, new Func<StackFrame, string>(Patch_StackTraceUtilities.GetFileLineOrILOffset).Method);
 
         matcher.Advance(1);
