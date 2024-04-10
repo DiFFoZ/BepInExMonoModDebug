@@ -16,12 +16,17 @@ internal static class Patch_StackTrace
 
         var method = AccessTools.Method(typeof(StackFrame), nameof(StackFrame.GetFileLineNumber));
 
+        // Workaround was made to fix lethallib, remove it when PR will be merged
+        // https://github.com/EvaisaDev/LethalLib/pull/74
+
         matcher.SearchForward(c => c.Calls(method))
             .ThrowIfInvalid("Failed to find call GetFileLineNumber")
-            .Set(OpCodes.Call, new Func<StackFrame, string>(Patch_StackTraceUtilities.GetFileLineOrILOffset).Method);
-
-        matcher.Advance(1);
-        matcher.RemoveInstructions(1);
+            .InsertAndAdvance(new CodeInstruction(OpCodes.Dup)) // copy stack frame
+            .Advance(1)
+            .InsertAndAdvance(new CodeInstruction(OpCodes.Nop), new(OpCodes.Nop)) // workaround for lethallib (it removes 2 ins)
+            .SetInstruction(new CodeInstruction(OpCodes.Pop)) // replaces box (deletes lethallib value)
+            .Advance(1)
+            .Insert(new CodeInstruction(OpCodes.Call, new Func<StackFrame, string>(Patch_StackTraceUtilities.GetFileLineOrILOffset).Method));
 
         return matcher.InstructionEnumeration();
     }
