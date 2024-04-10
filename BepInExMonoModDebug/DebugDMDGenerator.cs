@@ -20,7 +20,7 @@ internal sealed class DebugDMDGenerator : DMDGenerator<DebugDMDGenerator>
         if (!ShouldDump || dmd.OriginalMethod == null)
         {
             ToggleDump(false);
-            return DMDGenerator<DMDEmitDynamicMethodGenerator>.Generate(dmd, context);
+            return DMDGenerator<DMDCecilGenerator>.Generate(dmd, context);
         }
 
         ShouldDump = false;
