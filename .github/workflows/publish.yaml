@@ -35,7 +35,7 @@ jobs:
       - name: Zip files
         run: |
           mkdir -p ./release/BepInEx/patchers/BepInExMonoModDebug
-          mv ./BepInExMonoModDebug/bin/Release/netstandard2.1/* ./release/BepInEx/patchers/BepInExMonoModDebug
+          mv ./BepInExMonoModDebug/bin/Release/net481/* ./release/BepInEx/patchers/BepInExMonoModDebug
           mv ./release/BepInEx/patchers/BepInExMonoModDebug/icon.png ./release
           mv ./release/BepInEx/patchers/BepInExMonoModDebug/manifest.json ./release
           mv ./*.md ./release
