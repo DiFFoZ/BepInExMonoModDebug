@@ -38,6 +38,7 @@ internal sealed class DebugDMDGenerator : DMDGenerator<DebugDMDGenerator>
             return;
         }
 
+        // DMDEmitMethodBuilderGenerator dump doesn't work on Unity (causing hard crash)
         CecilEmitter.Dump(dmd.Definition, BepInExMonoModDebugPatcher.DumpsDirectory, dmd.OriginalMethod);
     }
 }
