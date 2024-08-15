@@ -4,7 +4,6 @@ using System.IO;
 using System.Reflection;
 using BepInEx;
 using BepInEx.Logging;
-using BepInExMonoModDebug.Patches;
 using HarmonyLib;
 using Mono.Cecil;
 using MonoMod.Cil;
@@ -33,10 +32,11 @@ public static class BepInExMonoModDebugPatcher
             DeleteOldDumpFiles();
         }
 
-        ILHook.OnDetour += OnDetour;
-        Environment.SetEnvironmentVariable("MONOMOD_DMD_TYPE", typeof(DebugDMDGenerator).FullName);
+        Harmony.PatchAll(typeof(BepInExMonoModDebugPatcher).Assembly);
 
-        Harmony.PatchAll(typeof(Patch_Chainloader));
+        ILHook.OnDetour += OnDetour;
+
+        Environment.SetEnvironmentVariable("MONOMOD_DMD_TYPE", typeof(DebugDMDGenerator).FullName);
     }
 
     private static bool OnDetour(ILHook hook, MethodBase @base, ILContext.Manipulator manipulator)

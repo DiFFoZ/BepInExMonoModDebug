@@ -26,8 +26,19 @@ internal static class Patch_StackTrace
             .InsertAndAdvance(new CodeInstruction(OpCodes.Nop), new(OpCodes.Nop)) // workaround for lethallib (it removes 2 ins)
             .SetInstruction(new CodeInstruction(OpCodes.Pop)) // replaces box (deletes lethallib value)
             .Advance(1)
-            .Insert(new CodeInstruction(OpCodes.Call, new Func<StackFrame, string>(Patch_StackTraceUtilities.GetFileLineOrILOffset).Method));
+            .Insert(new CodeInstruction(OpCodes.Call, new Func<StackFrame, string>(GetFileLineOrILOffset).Method));
 
         return matcher.InstructionEnumeration();
+    }
+
+    internal static string GetFileLineOrILOffset(StackFrame frame)
+    {
+        var line = frame.GetFileLineNumber();
+        if (line > 0)
+        {
+            return line.ToString();
+        }
+
+        return "IL_" + frame.GetILOffset().ToString("X4");
     }
 }
