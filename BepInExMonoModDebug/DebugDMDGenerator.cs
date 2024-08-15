@@ -12,7 +12,7 @@ internal sealed class DebugDMDGenerator : DMDGenerator<DebugDMDGenerator>
     /// </remarks>
     internal static bool ShouldDump { get; set; }
 
-    public override MethodInfo _Generate(DynamicMethodDefinition dmd, object context)
+    protected override MethodInfo _Generate(DynamicMethodDefinition dmd, object context)
     {
         if (BepInExMonoModDebugPatcher.Configuration.ShouldSaveDumpFile.Value)
         {

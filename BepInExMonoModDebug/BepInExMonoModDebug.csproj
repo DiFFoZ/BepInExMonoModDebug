@@ -26,16 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" />
-    <Publicize Include="MonoMod.Utils">
-      <PublicizeTarget>all</PublicizeTarget>
-      <PublicizeCompilerGenerated>false</PublicizeCompilerGenerated>
-      <IncludeOriginalAttributesAttribute>false</IncludeOriginalAttributesAttribute>
-      <Strip>false</Strip>
-    </Publicize>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\CHANGELOG.md" />
   </ItemGroup>
 
