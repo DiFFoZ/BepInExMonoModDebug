@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net481</TargetFramework>
     <Nullable>enable</Nullable>
     <WarningsAsErrors>Nullable</WarningsAsErrors>
     <LangVersion>latest</LangVersion>
@@ -10,7 +10,6 @@
       https://nuget.bepinex.dev/v3/index.json;
     </RestoreAdditionalProjectSources>
     <RootNamespace>BepInExMonoModDebug</RootNamespace>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Version>0.0.0</Version>
   </PropertyGroup>
@@ -27,7 +26,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\CHANGELOG.md"/>
+    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" />
+    <Publicize Include="MonoMod.Utils">
+      <PublicizeTarget>all</PublicizeTarget>
+      <PublicizeCompilerGenerated>false</PublicizeCompilerGenerated>
+      <IncludeOriginalAttributesAttribute>false</IncludeOriginalAttributesAttribute>
+      <Strip>false</Strip>
+    </Publicize>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\CHANGELOG.md" />
   </ItemGroup>
 
   <Target Name="CopyPublishFiles" AfterTargets="AfterBuild">
